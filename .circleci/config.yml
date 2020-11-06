@@ -46,6 +46,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Configure git
+          command: git config --global user.name "Nick Bailey" && git config --global user.email "nicklbailey@gmail.com"
+      - run:
           name: Build Package
           command: npm run build
       - run:
