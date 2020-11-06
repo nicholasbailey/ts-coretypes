@@ -23,6 +23,7 @@ import {
     UUID,
     isUUID,
     asUUID,
+    UUIDOps,
     Email,
     isEmail,
     asEmail,
@@ -389,6 +390,13 @@ describe('coretypes', () => {
 
         it('should be NonEmptyStrings', () => {
             const x: NonEmptyString = asUUID('91a495f8-86a3-453a-aa10-1d50a45c95f9')
+        })
+
+        describe('UUID ops', () => {
+            it('should create new uuids', () => {
+                const x: UUID = UUIDOps.newUUID()
+                expect(isUUID(x)).toBe(true)
+            })
         })
     })
 
