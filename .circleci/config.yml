@@ -3,12 +3,36 @@ orbs:
   node: circleci/node@3.0.0
 
 workflows:
-  test:
+  on-commit:
     jobs:
-      - test
-  build-publish:
+      - install
+      - test:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
+
+  on-tag:
     jobs:
-      - build-publish:
+      - install:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - build:
+          requires:
+            - install
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - publish:
+          requires:
+            - install
+            - build
           filters:
             tags:
               only: /^v.*/
@@ -16,52 +40,54 @@ workflows:
               ignore: /.*/
 
 jobs:
-  # Runs on every commit from any branch
-  # this job does a standard lint-test-build to ensure
-  # the library is green to merge
-  test:
+  # Install all dependencies
+  install:
     working_directory: ~/repo
     docker:
       - image: circleci/node:12
     steps:
       - checkout
       - run:
-          name: Update NPM
+          name: Update npm
           command: "sudo npm install -g npm"
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install Dependencies
           command: npm ci
-      - run:
-          name: Run tests
-          command: npm test
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
 
-  build-publish:
+  # Run unit tests
+  test:
     working_directory: ~/repo
     docker:
       - image: circleci/node:12
     steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: Install Dependencies
-          command: npm ci
+          name: Run tests
+          command: npm test
+
+  # Build
+  build:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:12
+    steps:
       - run:
-          name: Build Package
+          name: Build Typescript
           command: npm run build
+
+  publish:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:12
+    steps:
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
       - run:
           name: Publish package
           command: npm publish
-      - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
