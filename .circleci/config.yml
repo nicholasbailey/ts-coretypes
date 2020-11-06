@@ -8,8 +8,11 @@ workflows:
       - test
   build-publish:
     jobs:
+      - test
       - build-publish:
           filters:
+            branch:
+              only: master
             tags:
               only: /^v.*/
 
