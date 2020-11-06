@@ -11,7 +11,9 @@
     "test": "npx jest",
     "build": "tsc",
     "perpare": "npm run build",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
