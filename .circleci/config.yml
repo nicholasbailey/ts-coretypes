@@ -11,7 +11,7 @@ workflows:
       - build-publish:
           filters:
             tags:
-              only: v.*
+              only: /^v.*/
 
 jobs:
   # Runs on every commit from any branch
