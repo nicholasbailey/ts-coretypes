@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "test": "npx jest",
-    "build": "tsc",
+    "build": "npx tsc",
     "perpare": "npm run build",
     "prepublishOnly": "npm test",
     "version": "git add -A src",
