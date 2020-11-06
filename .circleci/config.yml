@@ -12,7 +12,7 @@ workflows:
       - build-publish:
           filters:
             branches:
-              only: master
+              ingore: /.*/
             tags:
               only: /^v.*/
 
