@@ -1,7 +1,56 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
+
 workflows:
-  node-tests:
+  test:
     jobs:
-      - node/test
+      - test
+  build-publish:
+    jobs:
+      - build-publish:
+          filters:
+            branches:
+              only: master
+
+jobs:
+  test:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Update NPM
+          command: "sudo npm install -g npm"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm ci
+      - run:
+          name: Run tests
+          command: npm test
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+  build-publish:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Patch Version
+          command: npm version patch
+      - run:
+          name: Build Package
+          command: npm run build
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+      - run:
+          name: Publish package
+          command: npm publish

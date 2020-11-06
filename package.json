@@ -1,6 +1,6 @@
 {
   "name": "ts-coretypes",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A minimal library implementing many core data types",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -11,7 +11,9 @@
     "test": "npx jest",
     "build": "tsc",
     "perpare": "npm run build",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
