@@ -8,13 +8,12 @@ workflows:
       - test
   build-publish:
     jobs:
-      - test
       - build-publish:
           filters:
-            branches:
-              ingore: /.*/
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/
 
 jobs:
   # Runs on every commit from any branch
@@ -48,9 +47,11 @@ jobs:
       - image: circleci/node:12
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: Configure git
-          command: git config --global user.name "Nick Bailey" && git config --global user.email "nicklbailey@gmail.com"
+          name: Install Dependencies
+          command: npm ci
       - run:
           name: Build Package
           command: npm run build
@@ -60,3 +61,7 @@ jobs:
       - run:
           name: Publish package
           command: npm publish
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
