@@ -312,7 +312,7 @@ export namespace DateTimeOps {
      * Create a new LocalDate from a year month and day
      */
     export function newLocalDate(year: number, month: number, day: number): LocalDate {
-        return new Date(Date.UTC(year, month, day, 0, 0, 0, 0)) as LocalDate
+        return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0)) as LocalDate
     }
 
     export function now(): Instant {
