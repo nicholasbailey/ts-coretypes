@@ -480,7 +480,7 @@ describe('coretypes', () => {
         describe('newLocalDate', () => {
             it('should construct valid dates', () => {
                 const aDate = DateTimeOps.newLocalDate(asPositiveInt(2020), asPositiveInt(3), asPositiveInt(4))
-                expect(aDate).toEqual(asLocalDate(new Date(Date.UTC(2020, 3, 4))))
+                expect(aDate).toEqual(asLocalDate(new Date('2020-03-04T00:00:00.000Z')))
             })
         })
 
