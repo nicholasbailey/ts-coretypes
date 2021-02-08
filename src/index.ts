@@ -307,6 +307,7 @@ export function asDuration(x: any) {
 export type ShortTimeUnit = 'milliseconds' | 'seconds' | 'minutes' | 'hours'
 export type LongTimeUnit = 'days' | 'weeks' | 'months' | 'years'
 
+
 export namespace DateTimeOps {
     /**
      * Create a new LocalDate from a year month and day
@@ -317,6 +318,10 @@ export namespace DateTimeOps {
 
     export function now(): Instant {
         return new Date(Date.now()) as Instant
+    }
+
+    export function formatLocalDate(date: LocalDate): string {
+        return date.toISOString().slice(0, 10)
     }
 
     export function durationOf(amount: number, unit: ShortTimeUnit | 'days' | 'weeks'): Duration {
